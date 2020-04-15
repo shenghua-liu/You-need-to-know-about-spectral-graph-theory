@@ -1,0 +1,58 @@
+\section{Maximum Flow: Energy Flow}
+% by Bin Zhou
+Current fastest algorithm $O(n^{3/2})$(Lee Sidford '14)\\
+\textbf{Our focus}: Sparse graph $(m=O(n))$ and unit-capacity(U=1) regime.
+Find $(1-\epsilon)$-approx. $O(n^{4/3}\epsilon^{-3})$-time algorithm.
+
+\subsection{Finding electrical flows}
+Let $L$ be the laplacian for graph $G(V,E)$ where edge $e$ has weight $\frac{1}{R_e }$.  The potential vector $\phi$ for the electric flow and the current vector $i$ whose j-th
+component is the outgoing current at vertex $j$ are related as follows,
+\begin{equation}
+\begin{aligned}
+    L\phi=i \\
+    L^+i=\phi
+    \end{aligned}
+\end{equation}
+The Laplacian linear system solver can be used to find the electrical flow for any $i$ in time $O(m)$ by finding $\phi$ and then the current through each edge using Ohm's law.
+
+\subsection{Algorithm for max flow}
+\textbf{Binary search:} Suppose we have an algorithm that constructs a flow of value $f$ if one exists. The value of the max flow $F^*$ can be found in $\log n$ iterations by binary search and the max flow can be found by running the algorithm with input $F^*$.
+\begin{algorithm}[H]
+\caption{Algorithm for max flow}
+\begin{algorithmic}[1]
+\STATE $LB=0$,$UB=n^2$
+
+\WHILE{$UB-LB>\epsilon$}
+    \STATE  $F^*=\frac{UB+LB}{2}$
+    \STATE run the algorithm for $F^*$
+    \IF{exist flow}
+        \STATE $LB=F^*$
+    \ELSE
+        \STATE $UB=F^*$
+     \ENDIF
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Algorithm for $F^*$}
+\begin{algorithmic}[1]
+\STATE Treat edges as resistors of resistance $r_e=1$
+\STATE $i=0$
+\WHILE{$i < O(\rho \epsilon^{-2})$}
+    \STATE Compute electrical flow $f$ of value $F^*$
+    \STATE $\rho_i=\max_e|f^i(e)|$
+    \STATE $\rho=\max(\rho,\rho_i)$
+    \FOR{$e \in E$}
+        \IF{$f^i(e)>O(n^{1/3})$}
+            \STATE remove $e$
+        \ELSE
+            \STATE $r^i_e=r_e^{i-1}(1+\epsilon|f^i(e)|\rho^{-1}_i)$
+            \STATE $i=i+1$
+        \ENDIF
+    \ENDFOR
+\ENDWHILE
+
+
+\end{algorithmic}
+\end{algorithm}

@@ -1,0 +1,26 @@
+\section{Random Spanning Tree}
+\subsection{Define}
+Let $G(V, E)$ be a finite graph and $n = |V|$. The following three conditions are equivalent:
+\begin{itemize}
+    \item G is a tree.
+    \item G is circuit-free and has $n-1$ edges.
+    \item G is connected and has $n-1$ edges.
+\end{itemize}
+\subsection{Count trees}
+Let us define \textbf{in-degree matrix D} of a digraph $G(V, E)$, where $V=\{1, 2, \cdots, n\}$, as follows:
+\[
+    D(i, j)=\begin{cases}d_{in}(i) & if\ i=j \\ -k& if \ i \neq j, where\ k \ is \ the \ number \ of \ edges \ from \ i \ to \ j. \end{cases}
+\]
+\begin{theorem}
+The number of directed spanning trees with root $r$ of a digraph the minor of its \emph{in-degree matrix} which results from the erasure of the $r$th row and column.
+\end{theorem}
+
+\subsection{Random Spanning Tree}
+All the directed spanning trees of $G_M$ rooted at $i$ is denoted $T_{i}(G_M)$ and all rooted directed spanning trees of $G_M$ denoted $T(G_M)$.
+\begin{theorem}[Markov chain tree theorem]
+Let $M$ be an irreducible Markov chain on $n$ states with stationary distribution $\pi_1, \cdots, \pi_n$. Let $G_M$ be the directed graph associated with $M$. Then
+\begin{equation}
+    \pi_{i} = \frac{\sum_{T \in \mathcal{T}_i(G_M)}w(T)}{\sum_{T \in \mathcal{T}(G_M)}w(T)}, w(T) = \prod_{e \in T}{w(e)}.
+\end{equation}
+\end{theorem}
+

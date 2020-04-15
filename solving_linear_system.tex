@@ -1,0 +1,122 @@
+\section{Regression Problem: Solving Linear System}
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{|c|c|c|}
+         Method & Convergence rate & Iteration \\
+         \hline
+         Cheybshev & $\frac{1}{K(B^{-1}A)}$ & $\sqrt{\frac{\lambda_{n}}{\lambda_{1}}}\ln\epsilon^{-1}$\\
+         \hline
+         Conjugate Gradient & $\frac{1}{\sqrt{K(B^{-1}A)}}$ & $O(m^{1/2}\log _n)$\\
+         \hline
+    \end{tabular}
+    \caption{Caption}
+    \label{tab:my_label}
+\end{table}
+\textbf{Goal:} solve $Ax = b$. ($A$ is spd)
+\subsection{Precondition}
+Find a matrix $B$ that is approximates $A$, and solve:
+\[
+    B^{-1}Ax = B^{-1}b
+\]
+where $B$ is called a preconditioner, then we get iterative method:
+\[
+    x^{n+1} = x^{n} + B^{-1}(b - Ax^{n}),
+\]
+\[
+    x^{0} = B^{-1}b
+\]
+Now, we see that $\bm{B^{-1}b}$ is a good approximate of $\bm{x}$ in the $A$-norm.
+\begin{lemma}[Precondition Approximation]
+Let $A$ and $B$ be positive definite matrices such that
+\[
+    \alpha B \preceq A \preceq \beta B.
+\]
+Then all the eigenvalues of $\bm{B^{−1}A}$ lie between $\alpha$ and $\beta$.
+\begin{proof}
+We will just prove the upper bound. We have
+\begin{equation*}
+    \begin{aligned}
+        \lambda_{max}(B^{−1}A) &=  \lambda_{max}(B^{−1/2}A^{B−1/2})\\
+        &= \max_{x} \frac{x^T B^{−1/2}AB^{−1/2}x}{x^{T}x}  \\
+        &= \max_{y}\frac{y^{T}Ay}{y^{T}By}  ~~~~~~~~~~~ setting \ y=B^{−1/2}x, \\
+        & \leq \beta.
+    \end{aligned}
+\end{equation*}
+\end{proof}
+\end{lemma}
+So, if $B$ is an $\epsilon$-approximation of $A$ then all of the eigenvalues of
+\begin{equation}
+    I − AB^{−1}
+\end{equation}
+have absolute value at most $\epsilon$.
+Then, we can conduct that
+\begin{equation*}
+    \begin{aligned}
+        ||B^{-1}b−x||_{A}&=||A^{1/2}B^{-1}b - A^{1/2}x|| \\
+        &= ||A^{1/2}B^{-1}Ax - A^{1/2}x|| \\
+        &= ||A^{1/2}B^{-1}A^{1/2} - I|| ||A^{1/2}x|| \\
+        & \leq \epsilon ||A^{1/2}x||= \epsilon ||x||_{A}
+    \end{aligned}
+\end{equation*}
+
+\subsection{Preconditioned Cheybshev}
+Let $q_{t}$ be a polynomial that is 1 at 0 and that has absolute value less than $\epsilon$ at each of the eigenvalues $\lambda_{i}$, and let pt be the polynomial such that $q_{t} = 1 − xp_{t}(x)$. To use this polynomial to solve the system, we set
+\[
+    x_{t} = p_{t}(B^{−1}A)B^{−1}b.
+\]
+
+\subsection{Preconditioned Conjugate Gradient}
+
+\begin{itemize}
+    \item Idea: same as Conjugate Gradient method, which finds $x_{t}$ in 
+	Krylov subspace of $\{b, Ab, \cdots, A^{t}b\}$.
+	\item Krylov subspace:
+	\[
+	    \{B^{-1}b, (B^{-1}A)B^{-1}b, \cdots, (B^{-1}A)^{t}B^{-1}b\}
+	\]
+	\item Algorithm: find the vector $\bm{x_{t}}$ that minimizes the error in the $A$-norm.
+\end{itemize}
+
+\subsection{Subgraph Preconditioning}
+If $H$ is a subgraph of $G$, then
+\[
+    L_H \preceq L_G
+\]
+\[
+    \lambda(L_H^{-1}L_G) \geq 1
+\]
+Thus,
+\[
+    K(L_H^{-1}L_G) \leq \lambda_{max}(L_H^{-1}L_G)
+\]
+for any subgraph preconditioner.
+
+\subsubsection{Low stretch spanning tree}
+For any edge $e \in E$, we now define the stretch of $e$ with respect to $T$. let $e_1, \cdots, c_k \in F$ be the edges on the unique path in $T$ connecting the endpoints of $e$. Then, the stretch of $e$ with respect to $T$ is given by 
+\[
+    st_{T}(e)=w(e)(\sum_{i=1}^{k}\frac{1}{w(e_{i})})
+\]
+which the stretch of graph $G$ is
+\[
+    st_{T}(G) = \sum_{e \in E}st_{T}(e)
+\]
+\begin{theorem}
+Every weighted graph $G$ has a spanning tree subgraph $T$ such that the sum of the stretches of all edges of $G$ with respect to $T$ is at most
+\[
+    O(m \log n \log\log n),
+\]
+where $m$ is the number of edges $G$. Moreover, one can compute this tree in time $O(m \log n \log\log n)$.
+Thus, if we choose a low-stretch spanning tree $T$, we will ensure that
+\begin{equation*}
+    \begin{aligned}
+        Tr(L_T^{-1}L_G) &\leq \sum_{(u,v)\in E}w_{u,v}(\mathcal{X}_{u} - \mathcal{X}_{v})^{T}L_{T}^{-1}(\mathcal{X}_{u} - \mathcal{X}_{v}) \\
+        &\leq O(m \log n \log\log n).
+    \end{aligned}
+\end{equation*}
+    
+\end{theorem}
+So, 
+\[
+    \lambda_{max}(L_T^{-1}L_G) \leq O(m \log n \log\log n).
+\]
+PCG will require at most $O(m^{1/2} \log n)$ iterations, each of which requires one multiplication by $L_G$ and one linear solve in $L_T$ .

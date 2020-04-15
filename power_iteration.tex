@@ -1,0 +1,46 @@
+\section{Power Iteration}
+% Jiabao Zhang
+\subsection{Define}
+\begin{itemize}
+    \item An approximation to \textbf{the dominant eigenvector}.
+    \item Matrix $A$ can be decomposed into:
+    \[
+    A = VJV^{-1}
+    \]
+    \item Start vector $b_0$ can be written as:
+    \[
+    b_0 = c_1v_1+\cdots+c_nv_n
+    \]
+    \item Recurrence relation for $b_{k+1}$ is:
+    \[
+    b_{k+1}=\frac{Ab_{k}}{||Ab_{k}||}=\frac{A^{k+1}b_0}{||A^{k+1}b_0||}
+    \]
+\end{itemize}
+\begin{proof}
+\[
+    \begin{aligned}
+        b_k &= \frac{A^{k}b_0}{||A{k}b_0||}=\frac{(VJV^{-1})^{k}b_0}{||(VJV^{-1})^{k}b_0||}\\
+        &=\frac{VJ^{k}V^{-1}(c_1v_1+\cdots+c_nv_n)}{||VJ^{k}V^{-1}(c_1v_1+\cdots+c_nv_n)||}\\
+        &=\frac{VJ^{k}(c_1e_1+\cdots+c_ne_n)}{||VJ^{k}(c_1e_1+\cdots+c_ne_n)||}\\
+        &= (\frac{\lambda_1}{|\lambda_1|})^{k}\frac{c_1}{|c_1|}\frac{v_1+\frac{1}{c_1}(\frac{1}{\lambda_1}J)^{k}(c_2e_2+\cdots+c_ne_n)}{||v_1+\frac{1}{c_1}(\frac{1}{\lambda_1}J)^{k}(c_2e_2+\cdots+c_ne_n)||}
+    \end{aligned}
+\]
+The expression above simplifies as $k \to \infty$,
+\[
+\displaystyle (\frac{1}{\lambda_1}J)^{k} =\left[\begin{array}{cccc}[1] &  & & \\ & (\frac{1}{\lambda_1}J_2)^{k}  & &\\ &  &\ddots  &  \\
+   & & & (\frac{1}{\lambda_1}J_m)^{k}\end{array}\right]
+   \rightarrow \left[\begin{array}{cccc}1 &  & & \\ & 0 & &\\ &  &\ddots  &  \\
+   & & & 0 \end{array}\right]
+\]
+So, 
+\[
+    b_k = (\frac{\lambda_1}{|\lambda_1|})^{k}\frac{c_1}{|c_1|}\frac{v_1}{||v_1||}
+\]
+\end{proof}
+Note that $v_1$ is only a scalar, although the sequence $(b_k)$ may not converge, $b_k$ is nearly an eigenvector of $A$ for large $k$.
+\textbf{Convergence rate} is:
+\begin{equation}
+    |\frac{\lambda_2}{\lambda_1}|
+\end{equation}
+
+

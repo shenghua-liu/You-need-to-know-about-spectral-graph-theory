@@ -1,0 +1,194 @@
+\section{Random walks}
+% by Bin Zhou, Wenjie Feng
+% \begin{tabular}{ |c|c|c|  }
+%  \hline
+%  \multicolumn{3}{|c|}{Random on Graph } \\
+%  \hline
+%  & Iteration &Steady distribution  \\
+%  \hline
+%  Random   & $p_{t+1}=Wp_t$ &  $\frac{d}{1^Td} $\\
+%   \hline
+% Lazy random walk&  $p_{t+1}=\frac{1}{2}p_t +\frac{1}{2}Wp_t$ & $\frac{d}{1^Td} $\\
+%  \hline
+% Random walk with restart & $r_i =cWr_i+(1-c)e_i$& $ (1-c)(I-cW)^{-1}e_i$ \\
+%  \hline
+% Personal PageRank    & DZA&  012\\
+%  \hline
+% Spilling paint&   ASM&016\\
+
+%  \hline
+% \end{tabular}
+
+\begin{itemize}
+    \item Random walk \\
+    Iteration:
+    \[
+        p^{t+1}=Wp^t
+    \]
+    Steady distribution 
+    \[
+    \frac{d}{1^Td}
+    \]
+    
+    \item Lazy random walk \\
+    Iteration:
+    \[
+       p^{t+1}=\frac{1}{2}p^t +\frac{1}{2}Wp^t
+    \]
+    Steady distribution 
+    \[
+    \frac{d}{1^Td}
+    \]
+    
+     \item Random walk with restart \\
+    Iteration:
+    \[
+       p_i^{t+1} =cWp_i^{t}+(1-c)e_i
+    \]
+    Steady distribution 
+    \[
+     (1-c)(I-cW)^{-1}e_i
+    \]
+    
+     \item Personal PageRank  \\
+    Iteration:
+    \[
+       p^{t+1}_u =\alpha \mathcal{X}_u+((1-\alpha)Wp^t)_u
+    \]
+    Steady distribution 
+    \[
+     (I-(1-\alpha)W)^{-1}\alpha \mathcal{X}_u
+    \]
+    $\mathcal{X}_u$ is a personal parameter for user $u$
+     \item Spilling paint  \\
+    Iteration:
+    \[
+    s^{t+1}=s^t+\alpha r^t
+    \]
+    \[
+    r^{t+1}=(1-\alpha)Wr^t
+    \]
+    Steady distribution 
+    \[
+     \frac{2\alpha}{1+\alpha}(I-\frac{1-\alpha}{1+\alpha}W)^{-1}\mathcal{X}_u
+    \]
+    It is a diffusion process as diffusing paint in a graph. $\alpha$ is the fraction of the paint at each vertex dries in place.\\
+    $s$ is the vector which records how much paint has become \textit{stuck} at each vertex.\\
+    $r$ is the vector which indicates how much wet paint \textit{remain}s each vertex.
+    
+\end{itemize}
+
+
+\subsection{Steady state}
+Lazy random walk on a connected graph will converge to a stationary distribution $\pi$.\\
+Random walk may not have steady state(For connected non-bipartite graph).\\
+Random walk on a connected graph, and $t\ge 0$ 
+\[
+    ||p_t-\pi||\le \sqrt{\frac{\max_a d(a)}{\min_a d(a)}}\lambda_2^t
+\]
+If the walk starts at vertex $a$, for every vertex $b$ 
+\[
+ |p_t(b)-\pi(b)|\le \sqrt{\frac{d(b)}{d(a)}}\lambda_2^t
+\]
+\[
+\lambda_2^t=(1-\mu)^t\le e^{-t\mu}
+\]
+note: $\lambda_1=1$, we focus on the gap between $\lambda_2$ and 1, so we write $\lambda_2=1-\mu$
+
+\subsection{Random walk parameters}
+\begin{itemize}
+    \item Hitting time(Accessing time) \\
+    The expected \# steps in a random walk before node $v$ is visited, starting from node $u$.
+    \[
+    H(u,v)=\mathbb{E}[\min\{ t\in \mathbb{N}\setminus \{0\}:X_t=v\}|X_0=u]
+    \]
+    \[
+    H(u,u)=\frac{1}{\pi_u}=\frac{2|E|}{deg(u)}
+    \]
+    
+    
+    \item Commute time \\
+    The expected \# steps in a random walk starting at $i$, before node $j$ is visited and then node $i$ is reached again.
+    \[
+    k(i,j)=H(i,j)+H(j,i)
+    \]
+    \[
+    H(i,j)=\frac{1}{2}(k(i,j)+\sum_u \pi(u)[k(u,j)-k(u,i)])
+    \]
+    
+    \item Covering time \\
+    Expected time to visit all nodes.\\
+    If start from a given node $u$:
+\[
+C(u)=\mathbb{E}[min{t\in \mathbb{N}\setminus \{0\}: \cup_{s=0}^t X_s=V}|X_0=u]
+\]
+If no starting node is specified:
+\[
+C=\max_{u\in V}C(u)
+\]
+\end{itemize}
+
+\begin{theorem}
+The hitting time between any two nodes of a graph on $n$ nodes is at most:
+\begin{itemize}
+    \item $\frac{4}{27}n^3-\frac{1}{9}n^2+\frac{2}{3}n -1$ if $n==0$ (mod 3)
+    \item $\frac{4}{27}n^3-\frac{1}{9}n^2+\frac{2}{3}n -\frac{29}{27}$ if $n==1$ (mod 3)
+    \item $\frac{4}{27}n^3-\frac{1}{9}n^2+\frac{4}{9}n -\frac{13}{27}$ if $n==2$ (mod 3)
+\end{itemize}
+\end{theorem}
+
+\begin{theorem}
+For the symmetric matrix $N=D^{-\frac{1}{2}}MD^{\frac{1}{2}}, M=D^{-1}A$\\
+Eigen value-vector $(\lambda_i,v_i)$ of $N$. $\lambda_1\ge \lambda_2 \ge \cdots \ge \lambda_n$ \\
+For any two vertices $s,t \in V$
+\[
+ H(s,t)=2|E|\sum_{k=2}^n\frac{1}{1-\lambda_k}(\frac{v_{k,t}^2}{deg(t)}-\frac{v_{k,s}v_{k,t}}{\sqrt{deg(s)deg(t)}})
+\]
+\end{theorem}
+
+\begin{theorem}
+\label{hitting_time}
+For any vertex $s\in V$ 
+\[
+    \sum_{t\in V}\pi(t)H(s,t)=\sum_{k=2}^n\frac{1}{1-\lambda_k}
+\]
+\end{theorem}
+The point behind theorem~\ref{hitting_time} is that the right hand side is independent of the starting vertex $s$
+
+\begin{theorem}
+\label{commute_time}
+For any vertex $s,t \in V$
+\[
+k(s,t)=2m\sum_{k=2}^n\frac{1}{1-\lambda_k}(\frac{v_{kt}}{\sqrt{d(t)}}-\frac{v_{ks}}{\sqrt{d(s)}})^2
+\]
+using that $\frac{1}{2}\le \frac{1}{1-\lambda_k}\le \frac{1}{1-\lambda_2}$
+\[
+m(\frac{1}{d(s)}+\frac{1}{d(t)}) \le k(s,t) \le \frac{2m}{1-\lambda_2}(\frac{1}{d(s)}+\frac{1}{d(t)})
+\]
+\end{theorem}
+
+\begin{theorem}
+The cover time of any Graph $G$ is upper bounded by
+\[
+C\le 4(|V|-1)|E| \le 4n(n-1)^2
+\]
+\end{theorem}
+
+\begin{theorem}
+The cover time of any starting node in a graph with $n$ nodes:
+\[
+(1-o(1))n\log n \le C \le (\frac{4}{27}+o(1))n^3
+\]
+For any graph $G$ with $n=|V|$ vertices
+\[
+    n\ln n \lessapprox C \lessapprox n^3
+\]
+The cover time of regular graph on $n$ nodes 
+\[
+C\le 2n^2
+\]
+Locally computable transition probs. with
+\[
+    C\lessapprox n^2\log n
+\]
+\end{theorem}

@@ -1,0 +1,90 @@
+\section{Graph Sparsifier}
+\subsection{Problem formulation }
+\textbf{Input}
+\[
+G=(V,E,W), while \quad |E| \gg |V|
+\]
+\textbf{Output}
+\[
+H=(V,E',W'), while \quad |E| \approx |V| 
+\]
+Besides, $H$ is similar to $G$
+
+\textbf{Similarity}
+\begin{itemize}
+    \item cut-preserving
+    \[
+    |\{w_{ij}|i\in S,J \notin S \}| \approx |\{w'_{ij}|i\in S,J \notin S \}|
+    \]
+    \item spectral-preserving (implies cut-preserving)
+    \[
+    (1-\epsilon)L_G \preceq L_H \preceq (1+\epsilon)L_G
+    \]
+\end{itemize}
+
+\subsection{Graph as Resistor Network}
+$L$ is the Laplacian of $G$, $\#node=n$, $\#edge=m$. \\
+Let $w_{a,b}$ be the conductivity of edge $(a,b)$\\
+\textbf{Define}: 
+\[
+    U_{m\times n}, U((a,b),c)=\begin{cases}1 & if a=c \\ -1& of b=c \\ 0 & otherwise \end{cases}
+\]
+\[
+    W_{m\times m}, W((a,b),(c,d))=\begin{cases}w_{a,b} & if (a,b)=(c,d) \\  0 & otherwise \end{cases}
+\]
+Then the effective resistance $R_{eff}(a,b)$ from $a$ to $b$ is :
+\[
+    R_{eff}(a,b)=(\delta_a-\delta_b)^TL^+(\delta_a -\delta_b)
+\]
+note: $L^+$ is the pseudo-inverse of $L$, $\delta_i$ is a unit vector where i-th entry is equal to 1.
+\subsection{Sparsifier algorithm}
+\begin{algorithm}[H]
+\caption{Sparsifier algorithm}
+\begin{algorithmic}[1]
+\STATE $q_{a,b}=w_{a,b}R_{eff}(a,b)$
+\STATE $p_{a,b}=\min(1,C(\log n)\epsilon^{-2}q_{a,b})$
+\FOR{$e \in E$}
+    \STATE pick t uniformly from [0,1)
+    \IF{$t<p_{e}$}
+        \STATE include $e$ in $H$
+        \STATE $w'_e =\frac{w_{e}}{p_e}$
+     \ENDIF
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+This sparsifier algorithm keeps the spectral-preserving, and the $\#edge$ in $H$ is $O(C n\log n\epsilon^{-2})$ 
+\begin{proof} 
+
+\begin{itemize}
+    \item spectral-preserving
+    \begin{equation*}
+        \begin{aligned}
+            E(L_H)&=\sum_{(a,b)\in E}p_{a,b}\frac{w_{a,b}}{p_{a,b}}L_{a,b}\\
+            &=\sum_{(a,b)\in E}w_{a,b}L_{a,b} \\
+            &=L_G
+        \end{aligned}
+    \end{equation*}
+    \item $\#edge$ in $H$
+     \begin{equation*}
+        \begin{aligned}
+           \sum_{(a,b)\in E}q_{a,b}&=\sum_{(a,b)\in E}w_{a,b}R_{eff}(a,b)\\
+           &=\sum_{(a,b)\in E}w_{a,b}(\delta_a-\delta_b)^TL^+(\delta_a -\delta_b)\\
+           &=\sum_{(a,b)\in E}w_{a,b}Tr(L^+(\delta_a-\delta_b)(\delta_a -\delta_b)^T)\\
+           &=Tr(\sum_{(a,b)\in E}L^+w_{a,b}(\delta_a-\delta_b)(\delta_a -\delta_b)^T) \\
+           &=Tr(L_G^+L_G)\\
+           &=n-1
+        \end{aligned}
+    \end{equation*}
+    So 
+    \begin{equation*}
+        \begin{aligned}
+           \sum_{(a,b)\in E}p_{a,b}&=\sum_{(a,b)\in E}\min(1,C(\log n)q_{a,b}\epsilon^{-2})\\
+           &\le \sum_{(a,b)\in E}C(\log n)q_{a,b}\epsilon^{-2}\\
+            &= Cn \log n \epsilon^{-2} \sum_{(a,b)\in E}q_{a,b}\\
+             &\le Cn \log n\epsilon^{-2}
+        \end{aligned}
+    \end{equation*}
+    \item The effective resistances formation can use Chernoff bound, which promise: when number of edges in $H$ is larger, the probability decrease exponentially.
+
+\end{itemize}
+\end{proof}

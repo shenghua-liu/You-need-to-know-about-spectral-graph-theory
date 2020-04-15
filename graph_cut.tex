@@ -1,0 +1,150 @@
+\section{Graph Minimum/Maximum Cut}
+% by Bin Zhou
+\subsection{Definition}
+For Graph $G(V,E,W)$, define capacity as:
+\begin{equation}
+\nonumber
+Cap(A,B)=\sum_{(a,b)\in E,a\in A,b\in B}w(a,b)
+\end{equation}
+%\subsubsection{Quotient Cut}
+\begin{itemize}
+    \item \textbf{Quotient Cut}
+    \[\displaystyle
+    q(G)=\min_{S\subseteq V}\frac{Cap(S,\bar{S})}{\min\{|S|,|\bar{S}|\}}
+    \]
+    \item \textbf{Sparsest Cut}
+    \[\displaystyle
+    \alpha(G)=\min_{S\subseteq V}\frac{Cap(S,\bar{S})}{|S||\bar{S|}}
+    \]
+    Note:  $\frac{n}{2}\alpha(G)\leq q(G) \leq n\alpha (G)$
+    \item \textbf{Conductance}
+    \reminder{what is the definition of $Cap(S)$}
+    \[\displaystyle
+    \phi(G)=\min_{S\subseteq V}\frac{Cap(S,\bar{S})}{\min\{Cap(S), Cap(\bar{S})\}}
+    \]
+    Or given a mass at each vertex $m_i\geq d_i$, where $d_i$ is the degree of $v_i$. $Mass(V_i)=\sum_{v\in V_i } m_v$
+    \[\displaystyle
+    \phi(G)=\min_{S\subseteq V}\frac{Cap(S,\bar{S})}{\min\{Mass(S), Mass(\bar S)\}}
+    \]
+\end{itemize}
+
+
+For $\lambda_1 \leq \lambda_2,...\leq \lambda_n$ is the eigen values of Laplacian of $G$
+\begin{itemize}
+    \item \textbf{Theorem 1}
+    \[
+    \frac{\lambda_2}{2}\leq q(G) \leq\sqrt{2\Delta \lambda_2}, \Delta=\max\{d_i\}
+    \]
+    \item \textbf{Theorem 2}
+    \[
+    \frac{\lambda_2}{2}\leq q(G) \leq\sqrt{2\Delta \lambda_2}, \Delta=\max\{d_i\}
+    \]
+\end{itemize}
+
+\subsection{Graph Maximum Cut}
+\textbf{Problem}
+\[
+Given: G=(V,E)
+\]
+\[
+Goal: Max\quad \frac{1}{2}\sum_{i<j}w_{ij}(1-x_ix_j)
+\]
+\[
+s.t. \quad x_i \in \{+1,-1\} \quad i=1...n
+\]
+\textbf{Define} 
+$ALG(G)$ is the approximated solution found by our algorithm. $OPT(G)$ is the value of an optimal solution to max-cur on G
+
+\textbf{Basic randomized algorithm}
+\begin{algorithm}[H]
+\caption{randomized algorithm}
+\begin{algorithmic}[1]
+\FOR{$v \in V$}
+    \STATE pick t uniformly from [0,1)
+    \IF{$t<0.5$}
+        \STATE $v=-1$
+    \ELSE
+        \STATE $v=1$
+     \ENDIF
+\ENDFOR
+
+\end{algorithmic}
+\end{algorithm}
+\textbf{0.529 - approximation algorithm}
+\begin{algorithm}[H]
+\caption{Trevisan’s algorithm }
+\begin{algorithmic}[1]
+\FOR{$v \in V$}
+    \STATE compute $\beta = \lambda_{min}(I+D^{-1/2}AD^{-1/2})$
+    \IF{$\beta>2\epsilon$}
+        \RETURN Basic randomized algorithm
+    \ELSE
+        \STATE Compute $y$ statisfy $\beta=\frac{y^T(D+A)y}{y^Ty}$
+        \STATE $x=D^{1/2}y$
+        \STATE pick $t$ uniformly $[0,1]$
+        \STATE $L=\{i|x(i)\geq \sqrt{t} \}$
+        \STATE $R=\{i|x(i)\leq -\sqrt{t} \}$
+        \STATE $S=L\cup R$
+        \STATE recursive Max-Cut Alg$(V-S)=(L',R')$
+        \RETURN \atn{better of $(L\cup L',R\cup R') or (L \cup R',R\cup L')$}
+     \ENDIF
+\ENDFOR
+\end{algorithmic}
+\label{alg:maxCut}
+\end{algorithm}
+For Alg.~\ref{alg:maxCut}, if we choose $\epsilon \approx 0.0554 $, then  $\frac{ALG(G)}{OPT(G)} \approx 0.529$
+
+\textbf{Proof}
+
+If $\beta \ge 2\epsilon$, then $OPT\le (1-\epsilon)|E|$, the basic randomized algorithm has \[
+\mathbb{E}=\frac{1}{2}|E|\geq \frac{OPT}{2(1-\epsilon)}
+\]
+Note: Trevisan’s inequalities tell us 
+\[
+ \frac{1}{2}\beta_n \leq \beta(G) \leq \sqrt{2\beta_n}
+\]
+where $\beta_n$ is the smallest eigen value of $I+D^{-1/2}AD^{-1/2}$ 
+Then 
+\[
+ALG(G)\geq |\delta(L,R)|+1/2\delta(S,V-S)+ALG(G-S)
+\]
+\[
+OPT(G)\leq|E(L)|+|E(R)|+|\delta(L,R)|+|\delta(S,V-S)|+OPT(G-S)
+\]
+Then
+\begin{equation}
+\begin{gathered}
+        \frac{ALG(G)}{OPT(G)}\geq\min\{X,\frac{ALG(G-S)}{OPT(G-S)}\} \\
+    X=\frac{|\delta(L,R)|+\frac{1}{2}\delta(S,G-S)}{|E(L)|+|E(R)|+|\delta(L,R)|+|\delta(S,G-S)|}
+\end{gathered}
+\end{equation}
+
+Since $\beta_n\leq 2\epsilon$, using Trevisan’s inequalities we bound:
+\begin{equation}
+    \begin{aligned}
+    2\sqrt{\epsilon}&\geq \frac{2|E(L)|+2|E(R)|+|\delta(S,V-S)|}{vol(S)}\\
+ &=\frac{2|E(L)|+2|E(R)|+|\delta(S,V-S)|}{2|E(L)|+2|E(R)|+|\delta(S,V-S)|+2|\delta(L,R)|}\\
+ &=1-\frac{|\delta(L,R)|}{|E(L)|+|E(R)|+\frac{1}{2}|\delta(S,V-S)|+|\delta(L,R)|}
+    \end{aligned}
+\end{equation}
+Thus 
+\begin{equation}
+    \begin{aligned}
+    X&=
+ \frac{|\delta(L,R)|+\frac{1}{2}\delta(S,V-S)}{|E(L)|+|E(R)|+|\delta(S,V-S)|+|\delta(L,R)|}\\
+ &\geq
+ \frac{|\delta(L,R)|}{|E(L)|+|E(R)|+\frac{1}{2}|\delta(S,V-S)|+|\delta(L,R)|} \\
+ &\geq 1-2\sqrt{\epsilon}
+    \end{aligned}
+\end{equation}
+So, we can conclude that
+\begin{equation}
+    \frac{ALG(G)}{OPT(G)}\geq \min\{1-s\sqrt{\epsilon}, \frac{ALG(G)}{OPT(G)}\}
+\end{equation}
+The same must hold true for $G-S$ recursively. But note that for some subgraph of $G$ we consider in some recursive step, it may be possible that $\beta_n \geq 2\epsilon$. Thus we conclude that:
+\begin{equation}
+        \frac{ALG(G)}{OPT(G)}\geq \min\{1-s\sqrt{\epsilon}, \frac{1}{2(1-\epsilon)}\}
+\end{equation}
+These two expressions are equal at $\epsilon= 0.0554$, at which point the ratio is about 0.529 
+
+

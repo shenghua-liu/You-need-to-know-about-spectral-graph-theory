@@ -1,0 +1,46 @@
+\section{Bounding Eigenvalues}
+% Jiabao Zhang
+The second smallest eigenvalue $\lambda_2$: related to minimum cut.
+\subsection{Upper Bound}
+\begin{theorem}[Courant-Fischer] Let $M$ be an $n\times n$ symmetric matrix with eigenvalues $\lambda_1 \leq \lambda_2 \leq \cdots \leq \lambda_n$ with corresponding eigenvectors $\phi_1, \cdots, \phi_n$. Then,
+\begin{equation}
+    \lambda_i = \min_{x \perp \phi_1,\cdots,\phi_{i-1}} \frac{x^{T}Mx}{x^{T}x}
+\end{equation}
+and the eigenvectors satisfy
+\begin{equation}
+    \phi_i = arg\min_{x \perp \phi_1,\cdots,\phi_{i-1}} \frac{x^{T}Mx}{x^{T}x}
+\end{equation}
+\end{theorem}
+Recall
+\begin{equation}
+    \lambda_2 = \min_{v^T\textbf{1}=0}\frac{v^{T}Lv}{v^{T}v}
+\end{equation}
+So, every vector \textbf{v} orthogonal to \textbf{1} provides an upper bound on $\lambda_2$:
+\begin{equation}
+    \lambda_2 \leq \frac{v^{T}Lv}{v^{T}v}
+\end{equation}
+
+\subsection{Lower Bound}
+\subsubsection{Graphic Inequality}
+As $F \subseteq E$, we get
+\begin{equation}
+    L_G = \sum_{e \in E}L_e = \sum_{e \in F}L_e+\sum_{e \in E-F}L_e
+    \succeq  \sum_{e \in F}L_e = L_H
+\end{equation}
+
+\begin{lemma}
+If $G$ and $H$ are graphs such that $G \succeq c \cdot H$, then
+\begin{equation}
+    \lambda_{k}(G) \geq c\lambda_{k}(H),
+\end{equation}
+for all $k$.
+\end{lemma}
+\begin{proof}
+The Courant-Fischer Theorem tells us that
+\begin{equation}
+\begin{aligned}
+    \lambda_{k}(G)&=\min\limits_{dim(S)=k}\max\limits_{x\in S}\frac{x^{T}L_{G}x}{x^{T}x} \geq c \min\limits_{dim(S)=k} \max\limits_{x\in S}\frac{x^{T}L_{H}x}{x^{T}x}\\
+    &=c\lambda_{k}(H).
+\end{aligned}
+\end{equation}
+\end{proof}

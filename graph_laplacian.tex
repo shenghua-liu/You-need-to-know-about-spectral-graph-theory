@@ -1,0 +1,48 @@
+\section{Graph Laplacian}
+% by Jiabao Zhang
+\subsection{Important Formula}
+\begin{itemize}
+    \item $ L_G = D-A$
+    \item $L_G = \sum_{e}L_e$
+    \item
+    \begin{aligned}
+        L_G &= \sum_{(u,v)\in E}w_{u,v}(\delta_u - \delta_v)(\delta_u - \delta_v)^{T}\\
+        &= \sum_{(u,v)\in E}w_{u,v}L_{G_{u,v}}
+    \end{aligned}
+    \item $x^{T}L_{G}x=\sum_{(u,v)\in E}w_{u,v}(x(u)-x(v))^2$
+    \item If $\lambda_1 \leq \lambda_2 \leq \cdot \leq \lambda_n$
+    \begin{itemize}
+        \item $\lambda_2>0$. If and only if graph is connected.
+        \item $\lambda_1=0$, its eigen vector $\phi_1=\textbf{1}$.
+    \end{itemize}
+    \item \textbf{Normalize Laplace}
+    \[\displaystyle
+        D^{-1/2}LD^{-1/2}=I - D^{-1/2}AD^{-1/2}
+    \]
+\end{itemize}
+
+\subsection{Complete Graph}
+Complete graph $K_n$, which has edge set $\{(u,v): u \neq v\}$.
+\begin{lemma}
+The Laplacian of $K_n$ has eigenvalue 0 with multiplicity 1 and $n$ with multiplicity $n-1$. 
+\end{lemma}
+
+\subsection{Star Graph}
+Star graph $S_n$, which has edge set $\{(1,u): 2\leq u \leq n\}$.
+\begin{lemma}
+The Graph $S_n$ has eigenvalue 0 with multiplicity 1, eigenvalue 1 with multiplicity $n-2$, and $n$ with multiplicity 1. 
+\end{lemma}
+
+\subsection{HyperCube}
+Graph with vertex set ${0,1}^d$, with edges between vertices whose names differ in exactly one bit. 
+\begin{lemma}
+The eigenvalues of its Laplacian matrix the numbers$(0, 2, ..., 2n)$, $k$-th eigenvalue has multiplicity $C_n^k$.
+\end{lemma}
+\subsection{Generalized Laplacian}
+Graph $G$ with $n$ vertices, the generalized Laplacian $Q$ of G:
+\begin{itemize}
+    \item $Q_{uv} <0:(u,v)\in E$
+    \item $Q_{uv} =0:(u,v)\notin E$
+    \item $Q_{uu}$ Diagonal entries no constraints
+\end{itemize}
+\textbf{Not require} $Q\textbf{1}=0$

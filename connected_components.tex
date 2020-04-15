@@ -1,0 +1,80 @@
+\section{Connected Components}
+
+\subsection{Eigenvalue interlacing}
+\begin{theorem}
+Let $A$ be an n-by-n symmetric matrix and let $B$ be a principal submatrix of $A$ of dimension n-1(that is,$B$ is obtained by deleting the same row and column from $A$). Then,
+\begin{equation}
+    \alpha_1\geq\beta_1\geq \alpha_2\geq \beta_2\geq...\geq \alpha_{n-1}\geq \beta_{n-1}\geq \alpha_n
+\end{equation}
+where $\alpha_1 \geq \alpha_2\geq ... \geq \alpha_n$ and $\beta \geq \beta\geq ... \geq \beta_{n-1}$ are eigenvalues of $A$ and $B$, respectively.
+\end{theorem}
+
+\subsection{Perron-Frobenius Theorem}
+\begin{theorem}
+    Let $G$ be a connected graph, let $A$ be its adjacency matrix, and let $\mu_1 \geq \mu_2\geq... \geq \mu_n$ be its eigenvalues. Then
+    \begin{itemize}
+        \item $\mu_1 \geq -\mu_n $
+        \item $\mu_1 > \mu_2$
+        \item The eigenvalue $\mu_1$ has a strictly positive eigenvector.
+    \end{itemize}
+\end{theorem}
+\begin{corollary}
+\label{PFcorollary}
+Let $M$ be a matrix with non-positive off-diagonal entries, such that the graph of non-zero off-diagonal entries is connected. Let $\lambda_1$ be the smallest eigenvalue of $M$ and let $v_1$ be the corresponding eigenvector. Then $v_1$ may be taken to be strictly positive, and $\lambda_1$ has multiplicity 1.
+\end{corollary}
+
+\begin{proof}
+Consider the matrix $A=\sigma I -M$, for some large $\sigma$, this matrix will be non-negative, and the graph of its non-zero entries is connected. So, we may apply the Perron-Frobenius theory to $A$ to conclude that its largest eigenvalues $\alpha_1$ has multiplicity 11, and the corresponding eigenvector $v_1$ may be assumed to be strictly positive. We then have $\lambda_1 =\sigma - \alpha_1$, and $v_1$ is tan eigenvector of $\lambda_1$.
+\end{proof}
+
+
+\subsection{Fiedler’s Nodal Domain Theorem}
+\begin{theorem}
+    Let $G=(V,E,w)$ be a weighted connected graph, and let $L_G$ be its Laplacian matrix. Let $0=\lambda_1 <\lambda_2 \le ...\le \lambda_n$ be the eigenvalues of $L_G$ and let $v_1,...,v_n$ be the corresponding eigenvectors. Fo any $k\ge 2$, klet
+    \[
+        W_k=\{i\in V: v_k(i)\ge 0 \}.
+    \]
+    Then, the graph induced by $G$ on $W_k$ has at most k-1 connected components.
+\end{theorem}
+\begin{proof}
+recall that $v_1=1$ and $v_k$ is orthogonal $v_1$. So $v_k $ has both positive and negative entries.\\
+Assume $G(W_k)$ (Graph induced by $W_k$) has $t$ connected components. Re-order vertices let vertices in one conected component of $G(W_k)$ appear first.$(x_i\ge 0,y<0)$
+\[
+   \displaystyle \left[\begin{array}{ccccc}B_1 & 0 & 0& \cdots &c_1 \\0 & B_2 & 0& \cdots  &C_2 \\ \vdots & \vdots &\ddots  & \vdots & \vdots\\
+   0& 0& \cdots  &B_t &C_t\\C_1^T &C_2^T&\cdots  &C_t^T&D \end{array}\right] \left(\begin{array}{c}x_1  \\x_2\\ \vdots \\x_t\\y \end{array}\right)= \lambda_k \left(\begin{array}{c}x_1  \\x_2\\ \vdots \\x_t\\y \end{array}\right)
+\]
+Graph of non-zero entries in each $B_i$ connected, and that each $C_i$ non-positive, and has at least one non-zero entry (otherwise the graph $G$ would be disconnected).\\
+note: $y$ is the part of negative values in eigenvector $v_k$, D is the remaining elements of $L_G$ corresponding to $v_k$
+
+As each entry in $C_i$ is non-positive and $y$ is strictly negative, each entry of $C_i y$ is non-negative and some entry of $C_i y$ is positive. Thus, $x_i$ cannot be all zeros,
+\[
+B_i x_i =\lambda_k x_i -C_i y \le \lambda_k x_i
+\]
+and 
+\[
+x_i^TB_i x_i \le \lambda_k x_i^T x_i
+\]
+\textbf{Goal}: prove $\lambda_{min}(B_i) <\lambda_k$
+\begin{itemize}
+    \item $x_i$ all positive,then $x_i C_i y >0$, and
+    \[
+        x_i^TB_i x_i = \lambda_k x_i^T x_i -x_i^TC_i y < \lambda_k x_i^T x_i
+    \]
+    \item $x_i$ has zero entry, Perron-Frobenius theorem tells us that $x_i$ cannot be an eigenvector of smallest eigenvalue, and so the smallest eigenvalue of $B_i $ less than $\lambda_k$
+
+\end{itemize}
+    note: refer to Corollary~\ref{PFcorollary},  $B_i$ has non-positive off-diagonal entries, and its non-zero off-diagonally entries are connected as the i-th connected component.
+    
+Thus, the matrix
+\[
+\displaystyle B=\left[\begin{array}{cccc}B_1 & 0 & \cdots &0 \\0 & B_2 &  \cdots  &0 \\ \vdots & \vdots &\ddots  & \vdots \\
+   0& 0& \cdots  &B_t \end{array}\right]
+\]
+
+has  at least $t$ eigenvalues less than $\lambda_k$. By the eigenvalue interlacing theorem, this implies that $L_G$ has at least $t$ eigenvalues less than $\lambda_k$. We may conclude that $t$, the number of connected components of $G(W_k)$, is at most $k-1$.\\
+e.g.
+\[
+    \lambda_1\le\lambda_1(B)\le \lambda_2 \le \lambda_2(B) \le \cdots \le \lambda_t(B) < \lambda_k \le \cdots \le \lambda_n
+\]
+So $t\le k-1$
+\end{proof}
